@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.untact.dto.Article;
+import com.sbs.untact.util.Util;
 
 @Controller
 public class UsrArticleController {
@@ -22,10 +23,11 @@ public class UsrArticleController {
 		articleLastId = 0;
 		articles = new ArrayList<>();
 
-		articles.add(new Article(++articleLastId, "2021-02-23 18:18:18", "제목1", "내용1"));
-		articles.add(new Article(++articleLastId, "2021-02-23 18:18:18", "제목2", "내용2"));
-		articles.add(new Article(++articleLastId, "2021-02-23 18:18:18", "제목3", "내용3"));
-		articles.add(new Article(++articleLastId, "2021-02-23 18:18:18", "제목4", "내용4"));
+		//init용 article
+		articles.add(new Article(++articleLastId, Util.getNowDateStr(), Util.getNowDateStr(), "제목1", "내용1"));
+		articles.add(new Article(++articleLastId, Util.getNowDateStr(), Util.getNowDateStr(), "제목2", "내용2"));
+		articles.add(new Article(++articleLastId, Util.getNowDateStr(), Util.getNowDateStr(), "제목3", "내용3"));
+		articles.add(new Article(++articleLastId, Util.getNowDateStr(), Util.getNowDateStr(), "제목4", "내용4"));
 	}
 
 	@RequestMapping("/usr/article/detail")
@@ -43,8 +45,12 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doAdd")
 	@ResponseBody
-	public Map<String, Object> doAdd(String regDate, String title, String body) {
-		articles.add(new Article(++articleLastId, regDate, title, body));
+	public Map<String, Object> doAdd(String title, String body) {
+		
+		String regDate = Util.getNowDateStr();
+		String updateDate = Util.getNowDateStr();
+		
+		articles.add(new Article(++articleLastId, regDate, updateDate, title, body));
 
 		Map<String, Object> rs = new HashMap<>();
 		rs.put("resultCode", "S-1");
@@ -79,6 +85,8 @@ public class UsrArticleController {
 	@ResponseBody
 	public Map<String, Object> doModify(int id, String title, String body) {
 
+		String updateDate = Util.getNowDateStr();
+		
 		Article selArticle = null;
 
 		Map<String, Object> rs = new HashMap<>();
@@ -97,6 +105,7 @@ public class UsrArticleController {
 			return rs;
 		}
 
+		selArticle.setUpdateDate(updateDate);
 		selArticle.setTitle(title);
 		selArticle.setBody(body);
 
