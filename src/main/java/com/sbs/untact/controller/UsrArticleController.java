@@ -50,40 +50,72 @@ public class UsrArticleController {
 		rs.put("resultCode", "S-1");
 		rs.put("msg", "성공");
 		rs.put("id", articleLastId);
-		
+
 		return rs;
 	}
-	
+
 	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
 	public Map<String, Object> doDelete(int id) {
-		
+
 		boolean deleteArticleRs = deleteArticle(id);
 
 		Map<String, Object> rs = new HashMap<>();
-		
-		if(deleteArticleRs) {
+
+		if (deleteArticleRs) {
 			rs.put("resultCode", "S-1");
 			rs.put("msg", "성공");
-		}
-		else {
+		} else {
 			rs.put("resultCode", "F-1");
 			rs.put("msg", "해당 게시물은 존재하지 않습니다.");
 		}
-		
+
 		rs.put("id", id);
-		
+
+		return rs;
+	}
+
+	@RequestMapping("/usr/article/doModify")
+	@ResponseBody
+	public Map<String, Object> doModify(int id, String title, String body) {
+
+		Article selArticle = null;
+
+		Map<String, Object> rs = new HashMap<>();
+
+		for (Article article : articles) {
+			if (article.getId() == id) {
+				selArticle = article;
+				break;
+			}
+		}
+
+		if (selArticle == null) {
+			rs.put("resultCode", "F-1");
+			rs.put("msg", "해당 게시물은 존재하지 않습니다.");
+			rs.put("id", id);
+			return rs;
+		}
+
+		selArticle.setTitle(title);
+		selArticle.setBody(body);
+
+		rs.put("resultCode", "S-1");
+		rs.put("msg", "성공");
+
+		rs.put("id", id);
+
 		return rs;
 	}
 
 	private boolean deleteArticle(int id) {
-		for(Article article : articles) {
-			if(article.getId() == id) {
+		for (Article article : articles) {
+			if (article.getId() == id) {
 				articles.remove(article);
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }
