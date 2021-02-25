@@ -1,5 +1,6 @@
 package com.sbs.untact.util;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -48,6 +49,25 @@ public class Util {
 		}
 
 		return map;
+	}
+	
+	// 받은값을 정수로 정제하고 리턴
+	public static int getAsInt(Object object, int defaultValue) {
+		if (object instanceof BigInteger) {
+			return ((BigInteger) object).intValue();
+		} else if (object instanceof Double) {
+			return (int) Math.floor((double) object);
+		} else if (object instanceof Float) {
+			return (int) Math.floor((float) object);
+		} else if (object instanceof Long) {
+			return (int) object;
+		} else if (object instanceof Integer) {
+			return (int) object;
+		} else if (object instanceof String) {
+			return Integer.parseInt((String) object);
+		}
+
+		return defaultValue;
 	}
 
 }
