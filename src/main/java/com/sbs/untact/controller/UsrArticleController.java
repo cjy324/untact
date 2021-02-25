@@ -52,12 +52,7 @@ public class UsrArticleController {
 		
 		articles.add(new Article(++articleLastId, regDate, updateDate, title, body));
 
-		Map<String, Object> rs = new HashMap<>();
-		rs.put("resultCode", "S-1");
-		rs.put("msg", "성공");
-		rs.put("id", articleLastId);
-
-		return rs;
+		return Util.mapOf("resultCode", "S-1", "msg", "성공하였습니다.", "id", articleLastId);
 	}
 
 	@RequestMapping("/usr/article/doDelete")
@@ -66,19 +61,11 @@ public class UsrArticleController {
 
 		boolean deleteArticleRs = deleteArticle(id);
 
-		Map<String, Object> rs = new HashMap<>();
-
-		if (deleteArticleRs) {
-			rs.put("resultCode", "S-1");
-			rs.put("msg", "성공");
-		} else {
-			rs.put("resultCode", "F-1");
-			rs.put("msg", "해당 게시물은 존재하지 않습니다.");
+		if (deleteArticleRs == false) {
+			return Util.mapOf("resultCode", "F-1", "msg", "해당 게시물은 존재하지 않습니다.");
 		}
-
-		rs.put("id", id);
-
-		return rs;
+		
+		return Util.mapOf("resultCode", "S-1", "msg", id + "번 게시물을 삭제하였습니다.");
 	}
 
 	@RequestMapping("/usr/article/doModify")
@@ -89,8 +76,6 @@ public class UsrArticleController {
 		
 		Article selArticle = null;
 
-		Map<String, Object> rs = new HashMap<>();
-
 		for (Article article : articles) {
 			if (article.getId() == id) {
 				selArticle = article;
@@ -99,22 +84,14 @@ public class UsrArticleController {
 		}
 
 		if (selArticle == null) {
-			rs.put("resultCode", "F-1");
-			rs.put("msg", "해당 게시물은 존재하지 않습니다.");
-			rs.put("id", id);
-			return rs;
+			return Util.mapOf("resultCode", "F-1", "msg", "해당 게시물은 존재하지 않습니다.", "id", id);
 		}
 
 		selArticle.setUpdateDate(updateDate);
 		selArticle.setTitle(title);
 		selArticle.setBody(body);
 
-		rs.put("resultCode", "S-1");
-		rs.put("msg", "성공");
-
-		rs.put("id", id);
-
-		return rs;
+		return Util.mapOf("resultCode", "S-1", "msg", "성공", "id", id);
 	}
 
 	private boolean deleteArticle(int id) {
