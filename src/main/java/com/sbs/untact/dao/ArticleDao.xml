@@ -31,11 +31,13 @@
 	<!-- public void addArticle(String title, String body); -->
 	<insert id="addArticle" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO article
-		SET
-		regDate = NOW(),
-		updateDate = NOW(),
-		title = #{title},
-		`body` = #{body}
+		<set> <!-- SET 대신 set으로 감싸주는 것이 관례 -->
+			regDate = NOW(),
+			updateDate = NOW(),
+			title = #{title},
+			`body` = #{body}
+		</set>
+		
 	</insert>
 	<!-- public void deleteArticle(int id); -->
 	<delete id="deleteArticle">
@@ -45,10 +47,17 @@
 	<!-- public void modifyArticle(int id, String title, String body); -->
 	<update id="modifyArticle">
 		UPDATE article
-		SET
-		updateDate = NOW(),
-		title = #{title},
-		`body` = #{body}
+		<set>  <!-- set으로 감싸는 이유? 만약 set안의 내용이 채워지지 않았을 경우 다음 단계 진행 안하고 멈춤(쿼리 오류 방지) -->
+			<if test="title != null || body != null">
+				updateDate = NOW(),
+			</if>
+			<if test="title != null">
+				title = #{title},
+			</if>
+			<if test="body != null">
+				`body` = #{body}
+			</if>
+		</set>
 		WHERE id = #{id}
 	</update>
 
