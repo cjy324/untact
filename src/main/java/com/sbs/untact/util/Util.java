@@ -16,7 +16,7 @@ public class Util {
 
 	// 간단하게 Map을 만들어주는 유틸
 	public static Map<String, Object> mapOf(Object... args) {
-		// Object... args 알고리즘을 객수 제한없이 받을 수 있게 해준다
+		// Object... args 알고리즘을 갯수 제한없이 받을 수 있게 해준다
 
 		// 만약 들어온 args이 짝수가 아니면
 		// 즉, 키,값 조합이 아니면 throw
