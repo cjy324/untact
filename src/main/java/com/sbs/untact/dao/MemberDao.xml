@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sbs.untact.dao.MemberDao">
+
+	<!-- public void join(String title, String body); -->
+	<insert id="join" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO member
+		<set> <!-- SET 대신 set으로 감싸주는 것이 관례 -->
+			regDate = NOW(),
+			updateDate = NOW(),
+			loginId = #{loginId},
+			loginPw = #{loginPw},
+			`name` = #{name},
+			`nickname` = #{nickname},
+			`email` = #{email},
+			`cellphoneNo` = #{cellphoneNo}
+		</set>
+
+	</insert>
+
+
+
+</mapper>
