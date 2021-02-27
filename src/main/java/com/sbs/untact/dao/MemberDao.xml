@@ -20,6 +20,19 @@
 		</set>
 
 	</insert>
+	<!-- public Member getMember(@Param(value = "id") int id); -->
+	<select id="getMember" resultType="Member">
+		SELECT *
+		FROM `member`
+		WHERE loginId = #{id}
+	</select>
+	
+	<!-- public Member getMemberByLoginId(@Param(value = "loginId") String loginId); -->
+	<select id="getMemberByLoginId" resultType="Member">
+		SELECT *
+		FROM `member`
+		WHERE loginId = #{loginId}
+	</select>
 
 
 
