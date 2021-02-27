@@ -101,4 +101,21 @@ public class UsrMemberController {
 		return new ResultData("S-1", "로그아웃 되었습니다.");
 	}
 	
+	@RequestMapping("/usr/member/doModify")
+	@ResponseBody
+	public ResultData doModify(@RequestParam Map<String, Object> param, HttpSession session) {
+		if (session.getAttribute("loginedMemberId") == null) {
+			return new ResultData("F-1", "로그인 후 이용해주세요.");
+		}
+
+		if (param.isEmpty()) {
+			return new ResultData("F-2", "수정할 회원정보를 입력해주세요.");
+		}
+
+		int loginedMemberId = (int) session.getAttribute("loginedMemberId");
+		param.put("id", loginedMemberId);
+
+		return memberService.modifyMember(param);
+	}
+	
 }
