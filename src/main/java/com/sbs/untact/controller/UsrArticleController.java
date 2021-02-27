@@ -25,8 +25,18 @@ public class UsrArticleController {
 	@RequestMapping("/usr/article/detail")
 	@ResponseBody
 	// 스프링부트: 알아서 json형태로 바꿔 출력값을 리턴해준다.
-	public Article showDetail(int id) {
-		return articleService.getArticle(id);
+	public ResultData showDetail(Integer id) {
+		if (id == null) {
+			return new ResultData("F-1", "id를 입력해주세요.");
+		}
+
+		Article article = articleService.getForPrintArticle(id);
+
+		if (article == null) {
+			return new ResultData("F-2", "존재하지 않는 게시물번호 입니다.");
+		}
+	
+		return new ResultData("S-1", "성공", "article", article);
 	}
 
 	@RequestMapping("/usr/article/list")
