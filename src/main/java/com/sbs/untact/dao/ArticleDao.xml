@@ -35,7 +35,8 @@
 			regDate = NOW(),
 			updateDate = NOW(),
 			title = #{title},
-			`body` = #{body}
+			`body` = #{body},
+			memberId = #{memberId}
 		</set>
 		
 	</insert>

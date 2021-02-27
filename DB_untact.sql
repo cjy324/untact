@@ -9,25 +9,29 @@ CREATE TABLE article (
     regDate DATETIME NOT NULL,
     updateDate DATETIME NOT NULL,
     title CHAR(100) NOT NULL,
-    `body` TEXT NOT NULL
+    `body` TEXT NOT NULL,
+    `memberId` INT(10) UNSIGNED NOT NULL
 );
 
 # 게시물, 테스트 데이터 생성
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 title = "제목1 입니다.",
 `body` = "내용1 입니다.";
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 title = "제목2 입니다.",
 `body` = "내용2 입니다.";
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 title = "제목3 입니다.",
 `body` = "내용3 입니다."; 
 
@@ -55,5 +59,15 @@ loginId = "user1",
 loginPw = "user1",
 `name` = "user1",
 nickname = "user1",
+cellphoneNo = "01012341234",
+email = "juy32400@gmail.com";
+
+INSERT INTO `member`
+SET regDate = NOW(),
+updateDate = NOW(),
+loginId = "user2",
+loginPw = "user2",
+`name` = "user2",
+nickname = "user2",
 cellphoneNo = "01012341234",
 email = "juy32400@gmail.com";

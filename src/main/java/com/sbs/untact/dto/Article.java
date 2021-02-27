@@ -8,8 +8,10 @@ public class Article {
 	private int id;
 	private String regDate;
 	private String updateDate;
+	private int memberId;
 	private String title;
 	private String body;
+	
 	
 	public Article(int id, String regDate, String updateDate, String title, String body) {
 	
