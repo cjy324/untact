@@ -60,11 +60,6 @@ public class UsrMemberController {
 		//servlet에서와는 달리 스프링에선 session을 바로 요청해서 가져올 수 있다.
 		// ex) servlet에서는 requst를 통해 session을 요청하고 다시 HttpSession로 session 값을 가져왔었다.
 		
-		//기 로그인 회원 여부 확인
-		if (session.getAttribute("loginedMemberId") != null) {
-			return new ResultData("F-4", "이미 로그인 상태입니다.");
-		}
-
 		if (loginId == null) {
 			return new ResultData("F-1", "loginId를 입력해주세요.");
 		}
@@ -92,9 +87,6 @@ public class UsrMemberController {
 	@RequestMapping("/usr/member/doLogout")
 	@ResponseBody
 	public ResultData doLogout(HttpSession session) {
-		if (session.getAttribute("loginedMemberId") == null) {
-			return new ResultData("S-2", "이미 로그아웃 상태입니다.");
-		}
 
 		session.removeAttribute("loginedMemberId");
 
@@ -104,9 +96,6 @@ public class UsrMemberController {
 	@RequestMapping("/usr/member/doModify")
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpSession session) {
-		if (session.getAttribute("loginedMemberId") == null) {
-			return new ResultData("F-1", "로그인 후 이용해주세요.");
-		}
 
 		if (param.isEmpty()) {
 			return new ResultData("F-2", "수정할 회원정보를 입력해주세요.");
