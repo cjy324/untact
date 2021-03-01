@@ -1,4 +1,5 @@
 SELECT * FROM article;
+SELECT * FROM `board`;
 SELECT * FROM `member`;
 
 # 게시물 랜덤생성 쿼리
