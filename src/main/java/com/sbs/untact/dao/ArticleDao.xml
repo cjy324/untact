@@ -21,8 +21,8 @@
 		WHERE A.id = #{id}
 	</select>
 	
-	<!-- public List<Article> getArticles(String searchKeywordType, String searchKeyword); -->
-	<select id="getArticles" resultType="Article">
+	<!-- public List<Article> getArticles(@Param("searchKeywordType") String searchKeywordType, @Param("searchKeyword") String searchKeyword); -->
+	<select id="articles" resultType="Article">
 		SELECT *
 		FROM article
 		WHERE 1
@@ -58,6 +58,9 @@
 			A.`body` LIKE CONCAT('%', #{searchKeyword}, '%'))
 		</if>
 		ORDER BY A.id DESC
+		<if test="limitStart != null and limitTake != null">
+		LIMIT #{limitStart}, #{limitTake}
+		</if>
 	</select>
 	
 	<!-- public void addArticle(String title, String body); -->
@@ -82,7 +85,7 @@
 	<update id="modifyArticle">
 		UPDATE article
 		<set>  <!-- set으로 감싸는 이유? 만약 set안의 내용이 채워지지 않았을 경우 다음 단계 진행 안하고 멈춤(쿼리 오류 방지) -->
-			<if test="title != null || body != null">
+			<if test="title != null or body != null">
 				updateDate = NOW(),
 			</if>
 			<if test="title != null">

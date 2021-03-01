@@ -71,3 +71,4 @@ loginPw = "user2",
 nickname = "user2",
 cellphoneNo = "01012341234",
 email = "juy32400@gmail.com";
+
