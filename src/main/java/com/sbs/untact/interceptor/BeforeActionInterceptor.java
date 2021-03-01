@@ -20,18 +20,51 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
-		HttpSession session = request.getSession();
+		//HttpSession session = request.getSession();
+		int loginedMemberId = 0;
+		Member loginedMember = null;
+
+		String authKey = request.getParameter("authKey");
+
+		//파라미터로 authKey가 들어왔으면
+		if (authKey != null && authKey.length() > 0) {
+			//authKey정보를 통해 해당 회원 검색하기
+			loginedMember = memberService.getMemberByAuthKey(authKey);
+
+			//authKey가 일치하는 회원이 없다면
+			if (loginedMember == null) {
+				//인증되지 않은 회원
+				request.setAttribute("authKeyStatus", "invalid");
+			} else {
+				//authKey가 일치한다면 인증된 회원
+				request.setAttribute("authKeyStatus", "valid");
+				//인증된 회원의 id를 저장(=세션 만료와 상관없이 저장되는 정보)
+				loginedMemberId = loginedMember.getId();
+			}
+		} 
+		//파라미터로 authKey가 들어오지 않았다면
+		else {
+			//session 가져오기
+			HttpSession session = request.getSession();
+			request.setAttribute("authKeyStatus", "none");
+
+			//session에 로그인 정보 저장(=세션이 만료되면 초기화되는 정보)
+			if (session.getAttribute("loginedMemberId") != null) {
+				loginedMemberId = (int) session.getAttribute("loginedMemberId");
+				loginedMember = memberService.getMember(loginedMemberId);
+			}
+		}
 
 		// 로그인 여부에 관련된 정보를 request에 담는다.
 		boolean isLogined = false;
 		boolean isAdmin = false;
-		int loginedMemberId = 0;
-		Member loginedMember = null;
+		//int loginedMemberId = 0;
+		//Member loginedMember = null;
 
-		if (session.getAttribute("loginedMemberId") != null) {
-			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+		if (loginedMember != null) {
+			//loginedMemberId = (int) session.getAttribute("loginedMemberId");
 			isLogined = true;
-			loginedMember = memberService.getMember(loginedMemberId);
+			//loginedMember = memberService.getMember(loginedMemberId);
 			isAdmin = memberService.isAdmin(loginedMemberId);
 		}
 
