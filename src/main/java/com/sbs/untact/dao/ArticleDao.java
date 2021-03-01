@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.sbs.untact.dto.Article;
 import com.sbs.untact.dto.Board;
+import com.sbs.untact.dto.ResultData;
 
 /* Mybatis 적용으로 삭제 */
 //Mybatis틑 class가 아닌 interface를 인식함
@@ -27,5 +28,7 @@ public interface ArticleDao {
 	public Article getForPrintArticle(@Param("id") int id);
 	public List<Article> getForPrintArticles(@Param("boardId") int boardId, @Param("searchKeywordType") String searchKeywordType, @Param("searchKeyword") String searchKeyword, @Param("limitStart") int limitStart,
 			@Param("limitTake") int limitTake);
-	public Board getBoard(@Param("id")int id);
+	public Board getBoard(@Param("id") int id);
+	
+	public ResultData addReply(Map<String, Object> param);
 }

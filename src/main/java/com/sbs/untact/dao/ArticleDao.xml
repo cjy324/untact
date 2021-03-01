@@ -114,5 +114,15 @@
 		FROM board
 		WHERE id = #{id}
 	</select>
+	
+	<!-- public ResultData addReply(Map<String, Object> param); -->
+	<insert id="addReply" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO reply
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		articleId = #{articleId},
+		`body` = #{body},
+		memberId = #{memberId}
+	</insert>
 
 </mapper>
