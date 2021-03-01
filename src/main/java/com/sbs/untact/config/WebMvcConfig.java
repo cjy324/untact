@@ -4,12 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 //스프링이 시작되면 우선으로 읽어봐야되는 설정(config)이란 것을 알려주는 것
 public class WebMvcConfig implements WebMvcConfigurer {
+	// CORS 허용
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**");
+	}
+
 	// beforeActionInterceptor 인터셉터 불러오기
 	@Autowired
 	@Qualifier("beforeActionInterceptor")
@@ -41,8 +48,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/adm/member/login").excludePathPatterns("/adm/member/doLogin");
 
 		// 로그인 필요
-		registry.addInterceptor(needLoginInterceptor).addPathPatterns("/**").excludePathPatterns("/").excludePathPatterns("/adm/**")
-				.excludePathPatterns("/resource/**").excludePathPatterns("/usr/home/main").excludePathPatterns("/usr/member/authKey")
+		registry.addInterceptor(needLoginInterceptor).addPathPatterns("/**").excludePathPatterns("/")
+				.excludePathPatterns("/adm/**").excludePathPatterns("/resource/**")
+				.excludePathPatterns("/usr/home/main").excludePathPatterns("/usr/member/authKey")
 				.excludePathPatterns("/usr/member/login").excludePathPatterns("/usr/member/doLogin")
 				.excludePathPatterns("/usr/member/join").excludePathPatterns("/usr/member/doJoin")
 				.excludePathPatterns("/usr/article/list").excludePathPatterns("/usr/article/detail")
@@ -52,12 +60,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/usr/file/doTest*").excludePathPatterns("/test/**").excludePathPatterns("/error");
 
 		// 로그인 상태에서 접속할 수 없는 URI 전부 기술
-		registry.addInterceptor(needLogoutInterceptor)
-				.addPathPatterns("/adm/member/login")
-				.addPathPatterns("/adm/member/doLogin")
-				.addPathPatterns("/usr/member/login")
-				.addPathPatterns("/usr/member/doLogin")
-				.addPathPatterns("/usr/member/join")
+		registry.addInterceptor(needLogoutInterceptor).addPathPatterns("/adm/member/login")
+				.addPathPatterns("/adm/member/doLogin").addPathPatterns("/usr/member/login")
+				.addPathPatterns("/usr/member/doLogin").addPathPatterns("/usr/member/join")
 				.addPathPatterns("/usr/member/doJoin");
 
 	}
