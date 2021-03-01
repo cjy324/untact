@@ -79,9 +79,10 @@
 		<set> <!-- SET 대신 set으로 감싸주는 것이 관례 -->
 			regDate = NOW(),
 			updateDate = NOW(),
+			boardId = #{boardId},
+			memberId = #{memberId},
 			title = #{title},
-			`body` = #{body},
-			memberId = #{memberId}
+			`body` = #{body}
 		</set>
 	</insert>
 
