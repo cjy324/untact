@@ -21,6 +21,12 @@ public class AdmMemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@RequestMapping("/adm/member/login")
+	//@ResponseBody: @ResponseBody를 안하면 /WEB-INF/jsp/adm/member/login.jsp를 찾는다.
+	public String doLogin() {
+		return "adm/member/login";
+	}
+	
 	@RequestMapping("/adm/member/doLogin")
 	@ResponseBody
 	public ResultData doLogin(String loginId, String loginPw, HttpSession session) {
