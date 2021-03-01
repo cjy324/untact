@@ -16,7 +16,8 @@
 			`name` = #{name},
 			`nickname` = #{nickname},
 			`email` = #{email},
-			`cellphoneNo` = #{cellphoneNo}
+			`cellphoneNo` = #{cellphoneNo},
+			authKey = CONCAT("authKey1__", UUID(), "__", RAND())
 		</set>
 
 	</insert>
