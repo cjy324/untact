@@ -133,3 +133,38 @@ updateDate = NOW(),
 articleId = 2,
 memberId = 2,
 `body` = "댓글내용 3 입니다."; 
+
+# 게시물 전용 댓글에서 범용 댓글로 바꾸기 위해 relTypeCode 추가
+ALTER TABLE reply ADD COLUMN `relTypeCode` CHAR(20) NOT NULL AFTER updateDate;
+
+# 현재는 게시물 댓글 밖에 없기 때문에 모든 행의 relTypeCode 값을 article 로 지정
+UPDATE reply
+SET relTypeCode = 'article'
+WHERE relTypeCode = '';
+
+# articleId 칼럼명을 relId로 수정
+ALTER TABLE reply CHANGE `articleId` `relId` INT(10) UNSIGNED NOT NULL;
+
+# 고속 검색을 위해서 인덱스 걸기
+ALTER TABLE reply ADD KEY (relTypeCode, relId); 
+# SELECT * FROM reply WHERE relTypeCode = 'article' AND relId = 5; # O
+# SELECT * FROM reply WHERE relTypeCode = 'article'; # O
+# SELECT * FROM reply WHERE relId = 5 AND relTypeCode = 'article'; # X
+
+# authKey 칼럼을 추가
+ALTER TABLE `member` ADD COLUMN authKey CHAR(80) NOT NULL AFTER loginPw;
+
+# 기존 회원의 authKey 데이터 채우기
+UPDATE `member`
+SET authKey = 'authKey1__1'
+WHERE id = 1;
+
+UPDATE `member`
+SET authKey = 'authKey1__2'
+WHERE id = 2;
+
+# authKey 칼럼에 유니크 인덱스 추가
+ALTER TABLE `member` ADD UNIQUE INDEX (`authKey`);
+
+# authKey 칼럼에 유니크 인덱스 추가
+ALTER TABLE `untact`.`member` ADD UNIQUE INDEX (`authKey`);
