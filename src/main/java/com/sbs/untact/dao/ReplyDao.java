@@ -11,7 +11,8 @@ import com.sbs.untact.dto.Reply;
 public interface ReplyDao {
 
 	List<Reply> getForPrintReplies(@Param("relTypeCode") String relTypeCode, @Param("relId") int relId);
-	Reply getReply(int id);
-	void deleteReply(int id);
+	Reply getReply(@Param("id")int id);
+	void deleteReply(@Param("id")int id);
+	void modifyReply(@Param("id")int id, @Param("body")String body);
 
 }
