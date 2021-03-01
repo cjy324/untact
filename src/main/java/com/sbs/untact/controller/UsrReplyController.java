@@ -2,6 +2,8 @@ package com.sbs.untact.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +26,12 @@ public class UsrReplyController {
 	@ResponseBody
 	public ResultData showList(String relTypeCode, Integer relId) {
 
-		if ( relId == null ) {
-			return new ResultData("F-1", "id를 입력해주세요.");
+		if (relTypeCode == null) {
+			return new ResultData("F-1", "relTypeCode를 입력해주세요.");
+		}
+		
+		if (relId == null) {
+			return new ResultData("F-1", "relId를 입력해주세요.");
 		}
 
 		if ( relTypeCode.equals("article") ) {
@@ -39,5 +45,29 @@ public class UsrReplyController {
 		List<Reply> replies = replyService.getForPrintReplies(relTypeCode, relId);
 
 		return new ResultData("S-1", "성공", "replies", replies);
+	}
+	
+	@RequestMapping("/usr/reply/doDelete")
+	@ResponseBody
+	public ResultData doDelete(Integer id, HttpServletRequest req) {
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
+		if (id == null) {
+			return new ResultData("F-1", "id를 입력해주세요.");
+		}
+
+		Reply reply = replyService.getReply(id);
+
+		if (reply == null) {
+			return new ResultData("F-1", "해당 댓글은 존재하지 않습니다.");
+		}
+
+		ResultData actorCanDeleteRd = replyService.getActorCanDeleteRd(reply, loginedMemberId);
+
+		if (actorCanDeleteRd.isFail()) {
+			return actorCanDeleteRd;
+		}
+
+		return replyService.deleteReply(id);
 	}
 }

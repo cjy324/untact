@@ -3,6 +3,7 @@ package com.sbs.untact.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,9 +82,11 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doAdd")
 	@ResponseBody
-	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpSession session) {
+	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+		//HttpSession session을 HttpServletRequest req로 교체, 인터셉터에서 session 정보를 Request에 담음으로 
+		//session을 가져올 필요 없이 req로 값을 받으면 됨
 		
-		int loginedMemberId = Util.getAsInt(session.getAttribute("loginedMemberId"), 0);
+		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
 
 		if (param.get("title") == null) {
 			return new ResultData("F-1", "title을 입력해주세요.");
@@ -99,10 +102,10 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
-	public ResultData doDelete(Integer id, HttpSession session) {
+	public ResultData doDelete(Integer id, HttpServletRequest req) {
 		// int 기본타입 -> null이 들어갈 수 없음
 		// Integer 객체타입 -> null이 들어갈 수 있음
-		int loginedMemberId = Util.getAsInt(session.getAttribute("loginedMemberId"), 0);
+		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
 		
 		if (id == null) {
 			return new ResultData("F-1", "id를 입력해주세요.");
@@ -125,11 +128,11 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
-	public ResultData doModify(Integer id, String title, String body, HttpSession session) {
+	public ResultData doModify(Integer id, String title, String body, HttpServletRequest req) {
 		// int 기본타입 -> null이 들어갈 수 없음
 		// Integer 객체타입 -> null이 들어갈 수 있음
 		
-		int loginedMemberId = Util.getAsInt(session.getAttribute("loginedMemberId"), 0);
+		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
 
 		if (id == null) {
 			return new ResultData("F-1", "id를 입력해주세요.");
@@ -159,8 +162,8 @@ public class UsrArticleController {
 	
 	@RequestMapping("/usr/article/doAddReply")
 	@ResponseBody
-	public ResultData doAddReply(@RequestParam Map<String, Object> param, HttpSession session) {
-		int loginedMemberId = Util.getAsInt(session.getAttribute("loginedMemberId"), 0);
+	public ResultData doAddReply(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
 		if (param.get("body") == null) {
 			return new ResultData("F-1", "body를 입력해주세요.");
