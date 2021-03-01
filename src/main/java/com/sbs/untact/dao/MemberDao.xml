@@ -25,7 +25,7 @@
 	<select id="getMember" resultType="Member">
 		SELECT *
 		FROM `member`
-		WHERE loginId = #{id}
+		WHERE id = #{id}
 	</select>
 	
 	<!-- public Member getMemberByLoginId(@Param(value = "loginId") String loginId); -->
