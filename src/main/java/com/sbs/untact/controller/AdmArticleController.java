@@ -120,36 +120,12 @@ public class AdmArticleController extends BaseController{
 		for (String fileInputName : fileMap.keySet()) {
 			//fileInputName : file__article__0__common__attachment__1
 			MultipartFile multipartFile = fileMap.get(fileInputName);
-			//'file__article__0__common__attachment__1'를 "__" 기준으로 쪼갠다.
-			//  0       1	  2    3          4      5
-			String[] fileInputNameBits = fileInputName.split("__");
-
 			
-			if (fileInputNameBits[0].equals("file") == false) {
-				continue;
+			if(multipartFile.isEmpty() == false) {
+				//저장할 파일관련 정보를 넘김
+				genFileService.save(multipartFile, newArticleId);
 			}
 			
-			// getSize() : 파일 사이즈를 가져오는 명령어
-			int fileSize = (int) multipartFile.getSize();
-
-			// 파일 사이즈가 0이거나 0보다 작으면 continue
-			if (fileSize <= 0) {
-				continue;
-			}
-
-			String relTypeCode = fileInputNameBits[1];
-			int relId = newArticleId;
-			String typeCode = fileInputNameBits[3];
-			String type2Code = fileInputNameBits[4];
-			int fileNo = Integer.parseInt(fileInputNameBits[5]);
-			String originFileName = multipartFile.getOriginalFilename();
-			String fileExtTypeCode = Util.getFileExtTypeCodeFromFileName(multipartFile.getOriginalFilename());
-			String fileExtType2Code = Util.getFileExtType2CodeFromFileName(multipartFile.getOriginalFilename());
-			String fileExt = Util.getFileExtFromFileName(multipartFile.getOriginalFilename()).toLowerCase();
-			String fileDir = Util.getNowYearMonthDateStr();
-
-			genFileService.saveMeta(relTypeCode, relId, typeCode, type2Code, fileNo, originFileName, fileExtTypeCode,
-					fileExtType2Code, fileExt, fileSize, fileDir);
 		}
 
 		return addArticleRd;
