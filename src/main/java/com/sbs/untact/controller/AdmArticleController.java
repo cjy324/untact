@@ -80,6 +80,11 @@ public class AdmArticleController extends BaseController{
 
 		return "adm/article/list";
 	}
+	
+	@RequestMapping("/adm/article/add")
+	public String showAdd(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+		return "adm/article/add";
+	}
 
 	@RequestMapping("/adm/article/doAdd")
 	@ResponseBody
