@@ -4,18 +4,20 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 import com.sbs.untact.dto.Article;
 import com.sbs.untact.dto.Board;
 import com.sbs.untact.dto.ResultData;
 import com.sbs.untact.service.ArticleService;
+import com.sbs.untact.service.GenFileService;
 import com.sbs.untact.util.Util;
 
 @Controller
@@ -23,6 +25,8 @@ public class AdmArticleController extends BaseController{
 
 	@Autowired
 	private ArticleService articleService;
+	@Autowired
+	private GenFileService genFileService;
 
 	@RequestMapping("/adm/article/detail")
 	@ResponseBody
@@ -88,7 +92,7 @@ public class AdmArticleController extends BaseController{
 
 	@RequestMapping("/adm/article/doAdd")
 	@ResponseBody
-	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req, MultipartRequest multipartRequest) {
 		//HttpSession session을 HttpServletRequest req로 교체, 인터셉터에서 session 정보를 Request에 담음으로 
 		//session을 가져올 필요 없이 req로 값을 받으면 됨
 		
@@ -103,7 +107,52 @@ public class AdmArticleController extends BaseController{
 
 		param.put("memberId", loginedMemberId);
 		
-		return articleService.addArticle(param);
+		ResultData addArticleRd = articleService.addArticle(param);
+		
+		// addArticleRd map의 body에서 key값이 id인 것을 가져와라
+		int newArticleId = (int) addArticleRd.getBody().get("id");
+		
+		//MultipartRequest : 첨부파일 기능 관련 요청
+		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap(); //MultipartRequest로 들어온 map 정보를 가져오기
+				
+		
+		//fileMap.keySet() : file__article__0__common__attachment__1
+		for (String fileInputName : fileMap.keySet()) {
+			//fileInputName : file__article__0__common__attachment__1
+			MultipartFile multipartFile = fileMap.get(fileInputName);
+			//'file__article__0__common__attachment__1'를 "__" 기준으로 쪼갠다.
+			//  0       1	  2    3          4      5
+			String[] fileInputNameBits = fileInputName.split("__");
+
+			
+			if (fileInputNameBits[0].equals("file") == false) {
+				continue;
+			}
+			
+			// getSize() : 파일 사이즈를 가져오는 명령어
+			int fileSize = (int) multipartFile.getSize();
+
+			// 파일 사이즈가 0이거나 0보다 작으면 continue
+			if (fileSize <= 0) {
+				continue;
+			}
+
+			String relTypeCode = fileInputNameBits[1];
+			int relId = newArticleId;
+			String typeCode = fileInputNameBits[3];
+			String type2Code = fileInputNameBits[4];
+			int fileNo = Integer.parseInt(fileInputNameBits[5]);
+			String originFileName = multipartFile.getOriginalFilename();
+			String fileExtTypeCode = Util.getFileExtTypeCodeFromFileName(multipartFile.getOriginalFilename());
+			String fileExtType2Code = Util.getFileExtType2CodeFromFileName(multipartFile.getOriginalFilename());
+			String fileExt = Util.getFileExtFromFileName(multipartFile.getOriginalFilename()).toLowerCase();
+			String fileDir = Util.getNowYearMonthDateStr();
+
+			genFileService.saveMeta(relTypeCode, relId, typeCode, type2Code, fileNo, originFileName, fileExtTypeCode,
+					fileExtType2Code, fileExt, fileSize, fileDir);
+		}
+
+		return addArticleRd;
 	}
 
 	@RequestMapping("/adm/article/doDelete")
