@@ -15,6 +15,7 @@ public class Article {
 	
 	private String extra__writer;
 	private String extra__boardName;
+	private String extra__thumbImg;
 	
 	public Article(int id, String regDate, String updateDate, String title, String body) {
 	

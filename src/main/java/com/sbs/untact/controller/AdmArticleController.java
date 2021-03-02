@@ -15,10 +15,10 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import com.sbs.untact.dto.Article;
 import com.sbs.untact.dto.Board;
+import com.sbs.untact.dto.GenFile;
 import com.sbs.untact.dto.ResultData;
 import com.sbs.untact.service.ArticleService;
 import com.sbs.untact.service.GenFileService;
-import com.sbs.untact.util.Util;
 
 @Controller
 public class AdmArticleController extends BaseController{
@@ -79,6 +79,19 @@ public class AdmArticleController extends BaseController{
 		int itemsInAPage = 10;
 		
 		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page, itemsInAPage);
+		
+		/* 각 article에 달려있는 첨부파일 섬네일 가져오기 시작 */
+		for ( Article article : articles ) {
+											//String relTypeCode, int relId, String typeCode, String type2Code, int fileNo
+			GenFile genFile = genFileService.getGenFile("article", article.getId(), "common", "attachment", 1);
+
+			if ( genFile != null ) {
+				//img의 url을 가져오기
+				article.setExtra__thumbImg(genFile.getForPrintUrl());
+			}
+		}
+		/* 각 article에 달려있는 첨부파일 섬네일 가져오기 끝 */
+		
 		
 		req.setAttribute("articles", articles);
 
