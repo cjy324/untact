@@ -4,6 +4,10 @@
 
 <%@ include file="../part/mainLayoutHead.jspf"%>
 
+<c:set var="fileInputMaxCount" value="10"/>
+<script>
+ArticleAdd__fileInputMaxCount = parseInt("${fileInputMaxCount}");
+</script>
 
 <script>
 
@@ -32,36 +36,40 @@ function ArticleAdd__checkAndSubmit(form) {
 	/* 첨부파일 용량 제한 쿼리 */
 	var maxSizeMb = 50; 
 	var maxSize = maxSizeMb * 1024 * 1024; //첨부파일 제한 용량을 50MB로 설정
-	if (form.file__article__0__common__attachment__1.value) {
-		if (form.file__article__0__common__attachment__1.files[0].size > maxSize) {
-			alert(maxSizeMb + "MB 이하의 파일을 업로드 해주세요.");
-			form.file__article__0__common__attachment__1.focus();
-			
-			return;
+
+	//반목문으로 변경
+	for(let inputNo = 1; inputNo <= ArticleAdd__fileInputMaxCount; inputNo++){
+		//같은 의미? var input = form.file__article__0__common__attachment__ + inputNo;
+		var input = form["file__article__0__common__attachment__" + inputNo];
+
+		if (input.value) {
+			if (input.files[0].size > maxSize) {
+				alert(maxSizeMb + "MB 이하의 파일을 업로드 해주세요.");
+				input.focus();
+				
+				return;
+			}
 		}
 	}
-	
-	if (form.file__article__0__common__attachment__2.value) {
-		if (form.file__article__0__common__attachment__2.files[0].size > maxSize) {
-			alert(maxSizeMb + "MB 이하의 파일을 업로드 해주세요.");
-			form.file__article__0__common__attachment__2.focus();
-			
-			return;
-		}
-	}
+
 
 	/* 파일 업로드 */
 	// 파일 업로드를 ajax로 하는 이유?
 	// vue,안드로이드,리엑트 등은 파일전송을 ajax로 해야하기 때문
 	const startUploadFiles = function(onSuccess) {
-		//form.file__article__0__common__attachment__1.value.length가 0보다 크면
-		//즉, 첨부파일1이 있으면 needToUpload
-		var needToUpload = form.file__article__0__common__attachment__1.value.length > 0;
-		//또는, 첨부파일1이 없어도 첨부파일2가 있으면 needToUpload
-		if (!needToUpload) {
-			needToUpload = form.file__article__0__common__attachment__2.value.length > 0;
-		}
 
+		var needToUpload = false;
+
+		for(let inputNo = 1; inputNo <= ArticleAdd__fileInputMaxCount; inputNo++){
+			var input = form["file__article__0__common__attachment__" + inputNo];
+			//form.file__article__0__common__attachment__1.value.length가 0보다 크면
+			//즉, 첨부파일1이 있으면 needToUpload
+			if(input.value.length > 0){
+				needToUpload = true;
+				break;
+			}
+		}
+		
 		//만약, needToUpload == false이면 리턴
 		if (needToUpload == false) {
 			onSuccess();  //일종의 콜백
@@ -132,24 +140,19 @@ function ArticleAdd__checkAndSubmit(form) {
 					<textarea name="body" class="form-row-input w-full rounded-sm" placeholder="내용을 입력해주세요."></textarea>
 				</div>
 			</div>
+			
+			<c:forEach begin="1" end="${fileInputMaxCount}" var="inputNo">
 			<div class="form-row flex flex-col lg:flex-row">
 				<div class="lg:flex lg:items-center lg:w-28">
-					<span>첨부파일 1</span>
+					<span>첨부파일 ${inputNo}</span>
 				</div>
 				<div class="lg:flex-grow">
-					<input type="file" name="file__article__0__common__attachment__1"
+					<input type="file" name="file__article__0__common__attachment__${inputNo}"
 						class="form-row-input w-full rounded-sm" />
 				</div>
 			</div>
-			<div class="form-row flex flex-col lg:flex-row">
-				<div class="lg:flex lg:items-center lg:w-28">
-					<span>첨부파일 2</span>
-				</div>
-				<div class="lg:flex-grow">
-					<input type="file" name="file__article__0__common__attachment__2"
-						class="form-row-input w-full rounded-sm" />
-				</div>
-			</div>
+			</c:forEach>
+			
 			<div class="form-row flex flex-col lg:flex-row">
 				<div class="lg:flex lg:items-center lg:w-28">
 					<span>작성</span>
