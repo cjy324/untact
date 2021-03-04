@@ -49,8 +49,62 @@ function ArticleAdd__checkAndSubmit(form) {
 			return;
 		}
 	}
-	form.submit();
+
+	/* 파일 업로드 */
+	// 파일 업로드를 ajax로 하는 이유?
+	// vue,안드로이드,리엑트 등은 파일전송을 ajax로 해야하기 때문
+	const startUploadFiles = function(onSuccess) {
+		//form.file__article__0__common__attachment__1.value.length가 0보다 크면
+		//즉, 첨부파일1이 있으면 needToUpload
+		var needToUpload = form.file__article__0__common__attachment__1.value.length > 0;
+		//또는, 첨부파일1이 없어도 첨부파일2가 있으면 needToUpload
+		if (!needToUpload) {
+			needToUpload = form.file__article__0__common__attachment__2.value.length > 0;
+		}
+
+		//만약, needToUpload == false이면 리턴
+		if (needToUpload == false) {
+			onSuccess();  //일종의 콜백
+			return;
+		}
+
+		//needToUpload가 있으면 즉, 파일 업로드가 필요하면 form을 만든다
+		//ajax로 파일을 업로드하려면 이 방식으로 해야함
+		//'form'안에 있는 정보가 자동으로 정리되어 fileUploadFormData 객체가 됨
+		var fileUploadFormData = new FormData(form);
+		$.ajax({
+			url : '/common/genFile/doUpload',
+			data : fileUploadFormData,
+			processData : false,
+			contentType : false,
+			dataType : "json",
+			type : 'POST',
+			success : onSuccess  // => onSuccess == startSubmitForm, 통신이 성공하면 onSuccess 실행
+		});
+	}
+
+	/* 파일업로드 완료 후 진행 */
+	const startSubmitForm = function(data) {
+		let genFileIdsStr = '';
+
+		
+		if (data && data.body && data.body.genFileIdsStr) {
+			genFileIdsStr = data.body.genFileIdsStr;
+		}
+		
+		form.genFileIdsStr.value = genFileIdsStr;
+		
+		form.file__article__0__common__attachment__1.value = '';
+		form.file__article__0__common__attachment__2.value = '';
+		
+		form.submit();
+	};
+	
 	ArticleAdd__submited = true;
+	//순서가 중요함
+	//1.파일업로드(startUploadFiles)
+	//2.파일업로드 후 실행되야 할 것(startSubmitForm)
+	startUploadFiles(startSubmitForm);
 }
 </script>
 
@@ -58,6 +112,8 @@ function ArticleAdd__checkAndSubmit(form) {
 <section class="section-1">
 	<div class="bg-white shadow-md rounded container mx-auto p-8 mt-8">
 		<form onsubmit="ArticleAdd__checkAndSubmit(this); return false;" action="doAdd" method="POST" enctype="multipart/form-data">
+			<!-- 파일업로드를 하게되면 먼저 ajax로 전송을 하고 응답으로 value="1,2" 이런식으로 파일 번호가 들어옴-->
+			<input type="hidden" name="genFileIdsStr" value="" />
 			<input type="hidden" name="boardId" value="${param.boardId}" />
 			<div class="form-row flex flex-col lg:flex-row">
 				<div class="lg:flex lg:items-center lg:w-28">

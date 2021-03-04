@@ -1,6 +1,7 @@
 SELECT * FROM article;
 SELECT * FROM `board`;
 SELECT * FROM `member`;
+SELECT * FROM `genFile`;
 
 # 게시물 랜덤생성 쿼리
 INSERT INTO article
