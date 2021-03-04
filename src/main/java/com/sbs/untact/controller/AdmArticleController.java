@@ -51,6 +51,8 @@ public class AdmArticleController extends BaseController{
 		// @RequestParam(defaultValue = "1") int page : page 파라미터의 값이 없으면 디폴트로 1이다.
 		
 		Board board = articleService.getBoard(boardId);
+		
+		req.setAttribute("board", board);
 
 		if ( board == null ) {
 			return msgAndBack(req, "존재하지 않는 게시판 입니다.");
