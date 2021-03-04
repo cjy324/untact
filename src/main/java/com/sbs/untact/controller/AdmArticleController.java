@@ -106,18 +106,17 @@ public class AdmArticleController extends BaseController{
 	}
 
 	@RequestMapping("/adm/article/doAdd")
-	@ResponseBody
-	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req, MultipartRequest multipartRequest) {
+	public String doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req, MultipartRequest multipartRequest) {
 		//HttpSession session을 HttpServletRequest req로 교체, 인터셉터에서 session 정보를 Request에 담음으로 
 		//session을 가져올 필요 없이 req로 값을 받으면 됨
 		
 		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
 
 		if (param.get("title") == null) {
-			return new ResultData("F-1", "title을 입력해주세요.");
+			return msgAndBack(req, "title을 입력해주세요.");
 		}
 		if (param.get("body") == null) {
-			return new ResultData("F-1", "body를 입력해주세요.");
+			return msgAndBack(req, "body를 입력해주세요.");
 		}
 
 		param.put("memberId", loginedMemberId);
@@ -143,7 +142,7 @@ public class AdmArticleController extends BaseController{
 			
 		}
 
-		return addArticleRd;
+		return msgAndReplace(req, newArticleId + "번 게시물이 생성되었습니다.", "../article/detail?id=" + newArticleId);
 	}
 
 	@RequestMapping("/adm/article/doDelete")
