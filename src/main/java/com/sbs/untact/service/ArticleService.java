@@ -24,6 +24,8 @@ import com.sbs.untact.util.Util;
 public class ArticleService {
 
 	@Autowired
+	private GenFileService genFileService;
+	@Autowired
 	private ArticleDao articleDao;
 	@Autowired
 	private MemberService memberService;
@@ -40,6 +42,19 @@ public class ArticleService {
 		articleDao.addArticle(param);
 
 		int id = Util.getAsInt(param.get("id"), 0);
+		
+		String genFileIdsStr = Util.ifEmpty((String)param.get("genFileIdsStr"), null);
+
+		if ( genFileIdsStr != null ) {
+			List<Integer> genFileIds = Util.getListDividedBy(genFileIdsStr, ",");
+
+			// 파일이 먼저 생성된 후에, 관련 데이터가 생성되는 경우에는, file의 relId가 일단 0으로 저장된다.
+			// 즉, ajax로 파일업로드는 하였지만, 파일업로드가 글작성보다 먼저 진행됐기 때문에 업로드된 파일들에는 relId가 일단 0으로 저장된 상태이다.
+			// 따라서, 이것을 뒤늦게라도 다음 로직을 통해 고처야 한다.
+			for (int genFileId : genFileIds) {
+				genFileService.changeRelId(genFileId, id);
+			}
+		}
 		
 		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
