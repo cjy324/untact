@@ -63,6 +63,11 @@ public class ArticleService {
 
 	public ResultData deleteArticle(int id) {
 		articleDao.deleteArticle(id);
+		
+		//게시물에 달린 첨부파일도 같이 삭제
+		//1. DB에서 삭제
+		//2. 저장소에서 삭제
+		genFileService.deleteFiles("article", id);
 
 		return new ResultData("S-1", "삭제하였습니다.", "id", id);
 	}

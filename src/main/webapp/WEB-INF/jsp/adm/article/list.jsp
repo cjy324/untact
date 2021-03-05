@@ -54,6 +54,8 @@
 					<a href="detail?id=${article.id}" class="text-blue-500 hover:underline">자세히 보기</a>
 					<a href="modify?id=${article.id}"
 						class="ml-2 text-blue-500 hover:underline">수정</a>
+					<a onclick="if ( !confirm('삭제하시겠습니까?') ) return false;" href="doDelete?id=${article.id}"
+						class="ml-2 text-blue-500 hover:underline">삭제</a>	
 					<div class="flex-grow"></div>
 					<div>
 						<a href="detail?id=${article.id}" class="flex items-center">

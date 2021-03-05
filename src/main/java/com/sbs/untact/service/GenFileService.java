@@ -141,6 +141,24 @@ public class GenFileService {
 		genFileDao.changeRelId(id, relId);
 	}
 
+	public void deleteFiles(String relTypeCode, int relId) {
+		//게시물에 달려있는 genFile 리스트 불러오기
+		List<GenFile> genFiles = genFileDao.getGenFiles(relTypeCode, relId);
+
+		for ( GenFile genFile : genFiles ) {
+			deleteFile(genFile);
+		}
+	}
+
+	private void deleteFile(GenFile genFile) {
+		//1. genFile의 저장소 경로를 찾고 저장소에서 삭제(유틸 활용)
+		String filePath = genFile.getFilePath(genFileDirPath);
+		Util.delteFile(filePath);
+
+		//2. genFile정보를 DB상에서 삭제
+		genFileDao.deleteFile(genFile.getId());
+	}
+
 	
 
 }

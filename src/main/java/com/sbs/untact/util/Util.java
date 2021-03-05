@@ -252,4 +252,14 @@ public class Util {
 		return Arrays.asList(str.split(divideBy)).stream().map(s -> Integer.parseInt(s.trim())).collect(Collectors.toList());
 	}
 
+	//파일을 저장소에서 삭제시켜주는 유틸
+	public static boolean delteFile(String filePath) {
+		java.io.File ioFile = new java.io.File(filePath);
+		if (ioFile.exists()) {
+			return ioFile.delete();
+		}
+
+		return true;
+	}
+
 }
