@@ -3,6 +3,7 @@ package com.sbs.untact.util;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -260,6 +261,18 @@ public class Util {
 		}
 
 		return true;
+	}
+
+	//숫자 포맷을 ("###,###,###") 형태로 변경해주는 유틸
+	public static String numberFormat(int num) {
+		DecimalFormat df = new DecimalFormat("###,###,###");
+
+		return df.format(num);
+	}
+
+	//만약 String으로 들어오면 int형으로 변환 후 numberFormat으로 리턴
+	public static String numberFormat(String numStr) {
+		return numberFormat(Integer.parseInt(numStr));
 	}
 
 }
