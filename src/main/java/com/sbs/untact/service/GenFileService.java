@@ -143,7 +143,7 @@ public class GenFileService {
 
 	public void deleteFiles(String relTypeCode, int relId) {
 		//게시물에 달려있는 genFile 리스트 불러오기
-		List<GenFile> genFiles = genFileDao.getGenFiles(relTypeCode, relId);
+		List<GenFile> genFiles = getGenFiles(relTypeCode, relId);
 
 		for ( GenFile genFile : genFiles ) {
 			deleteFile(genFile);
@@ -157,6 +157,14 @@ public class GenFileService {
 
 		//2. genFile정보를 DB상에서 삭제
 		genFileDao.deleteFile(genFile.getId());
+	}
+
+	public List<GenFile> getGenFiles(String relTypeCode, int relId, String typeCode, String type2Code) {
+		return genFileDao.getGenFiles(relTypeCode, relId, typeCode, type2Code);
+	}
+
+	public List<GenFile> getGenFiles(String relTypeCode, int relId) {
+		return genFileDao.getGenFiles(relTypeCode, relId, null, null);
 	}
 
 	

@@ -49,6 +49,13 @@
 		WHERE 1
 		AND relTypeCode = #{relTypeCode}
 		AND relId = #{relId}
+		<if test="typeCode != null">
+			AND typeCode = #{typeCode}
+		</if>
+		<if test="type2Code != null">
+			AND type2Code = #{type2Code}
+		</if>
+		ORDER BY typeCode, type2Code, fileNo
 	</select>
 	
 	<delete id="deleteFiles">

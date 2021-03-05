@@ -1,5 +1,6 @@
 package com.sbs.untact.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -170,6 +171,33 @@ public class AdmArticleController extends BaseController{
 
 		return articleService.deleteArticle(id);
 	}
+	
+	@RequestMapping("/adm/article/modify")
+	public String showModify(Integer id, HttpServletRequest req) {
+		if (id == null) {
+			return msgAndBack(req, "id를 입력해주세요.");
+		}
+
+		Article article = articleService.getForPrintArticle(id);
+
+		List<GenFile> genfiles = genFileService.getGenFiles("article", article.getId(), "common", "attachment");
+
+		Map<String, GenFile> filesMap = new HashMap<>();
+
+		for (GenFile genfile : genfiles) {
+			filesMap.put(genfile.getFileNo() + "", genfile);
+		}
+
+		article.getExtraNotNull().put("file__common__attachment", filesMap);
+		req.setAttribute("article", article);
+
+		if (article == null) {
+			return msgAndBack(req, "존재하지 않는 게시물번호 입니다.");
+		}
+
+		return "adm/article/modify";
+	}
+	
 
 	@RequestMapping("/adm/article/doModify")
 	@ResponseBody
