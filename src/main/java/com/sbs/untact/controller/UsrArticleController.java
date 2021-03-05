@@ -128,20 +128,22 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
-	public ResultData doModify(Integer id, String title, String body, HttpServletRequest req) {
+	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		// int 기본타입 -> null이 들어갈 수 없음
 		// Integer 객체타입 -> null이 들어갈 수 있음
 		
 		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
+		
+		int id = Util.getAsInt(param.get("id"), 0);
 
-		if (id == null) {
+		if (id == 0) {
 			return new ResultData("F-1", "id를 입력해주세요.");
 		}
 
-		if (title == null) {
+		if (Util.isEmpty(param.get("title"))) {
 			return new ResultData("F-1", "title을 입력해주세요.");
 		}
-		if (body == null) {
+		if (Util.isEmpty(param.get("body"))) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
 
@@ -157,7 +159,7 @@ public class UsrArticleController {
 			return actorCanModifyRd;
 		}
 		
-		return articleService.modifyArticle(id, title, body);
+		return articleService.modifyArticle(param);
 	}
 	
 	@RequestMapping("/usr/article/doAddReply")

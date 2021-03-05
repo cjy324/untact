@@ -20,6 +20,7 @@ import com.sbs.untact.dto.GenFile;
 import com.sbs.untact.dto.ResultData;
 import com.sbs.untact.service.ArticleService;
 import com.sbs.untact.service.GenFileService;
+import com.sbs.untact.util.Util;
 
 @Controller
 public class AdmArticleController extends BaseController{
@@ -127,6 +128,8 @@ public class AdmArticleController extends BaseController{
 		// addArticleRd map의 body에서 key값이 id인 것을 가져와라
 		int newArticleId = (int) addArticleRd.getBody().get("id");
 		
+		
+		/* 이미 ajax상에서 처리하므로 더이상 필요 없음
 		//MultipartRequest : 첨부파일 기능 관련 요청
 		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap(); //MultipartRequest로 들어온 map 정보를 가져오기
 				
@@ -142,7 +145,7 @@ public class AdmArticleController extends BaseController{
 			}
 			
 		}
-
+		*/
 		return msgAndReplace(req, newArticleId + "번 게시물이 생성되었습니다.", "../article/detail?id=" + newArticleId);
 	}
 
@@ -201,20 +204,22 @@ public class AdmArticleController extends BaseController{
 
 	@RequestMapping("/adm/article/doModify")
 	@ResponseBody
-	public ResultData doModify(Integer id, String title, String body, HttpServletRequest req) {
+	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		// int 기본타입 -> null이 들어갈 수 없음
 		// Integer 객체타입 -> null이 들어갈 수 있음
 		
 		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
+		
+		int id = Util.getAsInt(param.get("id"), 0);
 
-		if (id == null) {
+		if (id == 0) {
 			return new ResultData("F-1", "id를 입력해주세요.");
 		}
 
-		if (title == null) {
+		if (Util.isEmpty(param.get("title"))) {
 			return new ResultData("F-1", "title을 입력해주세요.");
 		}
-		if (body == null) {
+		if (Util.isEmpty(param.get("body"))) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
 
@@ -230,7 +235,7 @@ public class AdmArticleController extends BaseController{
 			return actorCanModifyRd;
 		}
 		
-		return articleService.modifyArticle(id, title, body);
+		return articleService.modifyArticle(param);
 	}
 	
 	@RequestMapping("/adm/article/doAddReply")

@@ -8,6 +8,7 @@
 <c:set var="fileInputMaxCount" value="10" />
 <script>
 ArticleModify__fileInputMaxCount = parseInt("${fileInputMaxCount}");
+const articleId = parseInt("${article.id}");
 </script>
 
 <script>
@@ -33,7 +34,7 @@ function ArticleModify__checkAndSubmit(form) {
 	var maxSizeMb = 50;
 	var maxSize = maxSizeMb * 1024 * 1024;
 	for ( let inputNo = 1; inputNo <= ArticleModify__fileInputMaxCount; inputNo++ ) {
-		const input = form["file__article__0__common__attachment__" + inputNo];
+		const input = form["file__article__" + articleId + "__common__attachment__" + inputNo];
 		
 		if (input.value) {
 			if (input.files[0].size > maxSize) {
@@ -50,7 +51,7 @@ function ArticleModify__checkAndSubmit(form) {
 		}
 		
 		for ( let inputNo = 1; inputNo <= ArticleModify__fileInputMaxCount; inputNo++ ) {
-			const input = form["file__article__0__common__attachment__" + inputNo];
+			const input = form["file__article__" + articleId + "__common__attachment__" + inputNo];
 			input.value = '';
 		}
 		
@@ -59,7 +60,7 @@ function ArticleModify__checkAndSubmit(form) {
 	const startUploadFiles = function(onSuccess) {
 		var needToUpload = false;
 		for ( let inputNo = 1; inputNo <= ArticleModify__fileInputMaxCount; inputNo++ ) {
-			const input = form["file__article__0__common__attachment__" + inputNo];
+			const input = form["file__article__" + articleId + "__common__attachment__" + inputNo];
 			if ( input.value.length > 0 ) {
 				needToUpload = true;
 				break;
@@ -118,7 +119,7 @@ function ArticleModify__checkAndSubmit(form) {
 						<span>첨부파일 ${inputNo}</span>
 					</div>
 					<div class="lg:flex-grow">
-					<input type="file" name="file__article__0__common__attachment__${inputNo}"
+					<input type="file" name="file__article__${article.id}__common__attachment__${inputNo}"
 							class="form-row-input w-full rounded-sm" />
 						<c:if test="${file != null}">
 							<div>
@@ -146,11 +147,11 @@ function ArticleModify__checkAndSubmit(form) {
 			</c:forEach>
 			<div class="form-row flex flex-col lg:flex-row">
 				<div class="lg:flex lg:items-center lg:w-28">
-					<span>작성</span>
+					<span>수정</span>
 				</div>
 				<div class="lg:flex-grow">
 					<div class="btns">
-						<input type="submit" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" value="작성">
+						<input type="submit" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" value="수정">
 						<input onclick="history.back();" type="button" class="btn-info bg-red-500 hover:bg-red-dark text-white font-bold py-2 px-4 rounded" value="취소">
 					</div>
 				</div>
