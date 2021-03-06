@@ -44,4 +44,8 @@ public class GenFile {
 	public String getForPrintUrl() {
 		return "/gen" + getBaseFileUrl() + "?updateDate=" + updateDate;
 	}
+	
+	public String getDownloadUrl() {
+		return "/common/genFile/doDownload?id=" + id;
+	}
 }

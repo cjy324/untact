@@ -61,7 +61,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/usr/article/list").excludePathPatterns("/usr/article/detail")
 				.excludePathPatterns("/usr/reply/list").excludePathPatterns("/usr/member/findLoginId")
 				.excludePathPatterns("/usr/member/doFindLoginId").excludePathPatterns("/usr/member/findLoginPw")
-				.excludePathPatterns("/usr/member/doFindLoginPw").excludePathPatterns("/usr/file/test*")
+				.excludePathPatterns("/usr/member/doFindLoginPw").excludePathPatterns("/common/genFile/doDownload").excludePathPatterns("/usr/file/test*")
 				.excludePathPatterns("/usr/file/doTest*").excludePathPatterns("/test/**").excludePathPatterns("/error");
 
 		// 로그인 상태에서 접속할 수 없는 URL 전부 기술

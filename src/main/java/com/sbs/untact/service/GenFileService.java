@@ -196,5 +196,9 @@ public class GenFileService {
 		return genFileDao.getGenFiles(relTypeCode, relId, typeCode, type2Code);
 	}
 
+	public GenFile getGenFile(int id) {
+		return genFileDao.getGenFileById(id);
+	}
+
 
 }

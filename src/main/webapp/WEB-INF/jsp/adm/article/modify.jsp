@@ -144,8 +144,8 @@ function ArticleModify__checkAndSubmit(form) {
 							class="form-row-input w-full rounded-sm" />
 						<c:if test="${file != null}">
 							<div>
-								<a href="${file.forPrintUrl}" target="_blank" class="text-blue-500 hover:underline">
-									${file.fileName}
+								<a href="${file.downloadUrl}" target="_blank" class="text-blue-500 hover:underline">
+									${file.originFileName}
 								</a> 
 								( ${Util.numberFormat(file.fileSize)} Byte )
 							</div>
