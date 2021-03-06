@@ -176,7 +176,7 @@ public class GenFileService {
 
 	public void deleteGenFiles(String relTypeCode, int relId) {
 		// 게시물에 달려있는 genFile 리스트 불러오기
-		List<GenFile> genFiles = genFileDao.getGenFiles(relTypeCode, relId);
+		List<GenFile> genFiles = genFileDao.getGenFilesByRelTypeCodeAndRelId(relTypeCode, relId);
 
 		for (GenFile genFile : genFiles) {
 			deleteGenFile(genFile);
