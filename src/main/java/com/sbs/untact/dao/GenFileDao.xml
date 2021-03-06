@@ -75,6 +75,24 @@
 		ORDER BY typeCode, type2Code, fileNo
 	</select>
 	
+	<select id="getGenFilesRelTypeCodeAndRelIdsAndTypeCodeAndType2Code"	resultType="GenFile">
+		SELECT *
+		FROM genFile
+		WHERE 1
+		AND relId IN
+		<!-- 반복문을 통해 relId들을 가져오는 쿼리 -->
+		<!-- 출력 형태 (3,2,1) -->
+		<foreach item="relId" index="index" collection="relIds"
+			open="(" separator="," close=")">
+			#{relId}
+		</foreach>
+		AND relTypeCode = #{relTypeCode}
+		AND typeCode = #{typeCode}
+		AND type2Code = #{type2Code}
+		ORDER BY relId, fileNo
+	</select>
+	
+	
 	<delete id="deleteFiles">
 		DELETE FROM genFile
 		WHERE relTypeCode = #{relTypeCode}

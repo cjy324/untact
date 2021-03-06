@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,11 +22,11 @@ import com.sbs.untact.util.Util;
 
 @Service
 public class GenFileService {
-	
-	//파일이 저장될 폴더 경로를 가져오는 명령어
+
+	// 파일이 저장될 폴더 경로를 가져오는 명령어
 	@Value("${custom.genFileDirPath}")
 	private String genFileDirPath;
-	
+
 	@Autowired
 	private GenFileDao genFileDao;
 
@@ -40,20 +41,20 @@ public class GenFileService {
 		genFileDao.saveMeta(param);
 
 		int id = Util.getAsInt(param.get("id"), 0);
-		
+
 		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
 
 	public ResultData save(MultipartFile multipartFile) {
 		String fileInputName = multipartFile.getName();
-		//'file__article__0__common__attachment__1'를 "__" 기준으로 쪼갠다.
-		//  0       1	  2    3          4      5
+		// 'file__article__0__common__attachment__1'를 "__" 기준으로 쪼갠다.
+		// 0 1 2 3 4 5
 		String[] fileInputNameBits = fileInputName.split("__");
 
 		if (fileInputNameBits[0].equals("file") == false) {
 			return new ResultData("F-1", "파라미터명이 올바르지 않습니다.");
 		}
-		
+
 		// getSize() : 파일 사이즈를 가져오는 명령어
 		int fileSize = (int) multipartFile.getSize();
 
@@ -79,7 +80,7 @@ public class GenFileService {
 		}
 
 		String fileDir = Util.getNowYearMonthDateStr();
-		
+
 		if (relId > 0) {
 			GenFile oldGenFile = getGenFile(relTypeCode, relId, typeCode, type2Code, fileNo);
 
@@ -118,16 +119,16 @@ public class GenFileService {
 	public GenFile getGenFile(String relTypeCode, int relId, String typeCode, String type2Code, int fileNo) {
 		return genFileDao.getGenFile(relTypeCode, relId, typeCode, type2Code, fileNo);
 	}
-	
+
 	public ResultData saveFiles(Map<String, Object> param, MultipartRequest multipartRequest) {
-		//업로드 시작
+		// 업로드 시작
 		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 		Map<String, ResultData> filesResultData = new HashMap<>();
 		List<Integer> genFileIds = new ArrayList<>();
 
-		//fileMap.keySet() : file__article__0__common__attachment__1
+		// fileMap.keySet() : file__article__0__common__attachment__1
 		for (String fileInputName : fileMap.keySet()) {
-			//fileInputName : file__article__0__common__attachment__1
+			// fileInputName : file__article__0__common__attachment__1
 			MultipartFile multipartFile = fileMap.get(fileInputName);
 
 			if (multipartFile.isEmpty() == false) {
@@ -138,12 +139,11 @@ public class GenFileService {
 				filesResultData.put(fileInputName, fileResultData);
 			}
 		}
-		
-		//genFileIds 리스트를 ","를 기준으로 문장형으로 조인(결합)시켜주는 구아바
-		//ex) [1,2,3,4,5]  => 1,2,3,4,5
+
+		// genFileIds 리스트를 ","를 기준으로 문장형으로 조인(결합)시켜주는 구아바
+		// ex) [1,2,3,4,5] => 1,2,3,4,5
 		String genFileIdsStr = Joiner.on(",").join(genFileIds);
-		
-		
+
 		/* 삭제 시작 */
 		int deleteCount = 0;
 
@@ -161,7 +161,7 @@ public class GenFileService {
 
 				if (oldGenFile != null) {
 					deleteGenFile(oldGenFile);
-					deleteCount++; 
+					deleteCount++;
 				}
 			}
 		}
@@ -175,20 +175,20 @@ public class GenFileService {
 	}
 
 	public void deleteGenFiles(String relTypeCode, int relId) {
-		//게시물에 달려있는 genFile 리스트 불러오기
+		// 게시물에 달려있는 genFile 리스트 불러오기
 		List<GenFile> genFiles = genFileDao.getGenFiles(relTypeCode, relId);
 
-		for ( GenFile genFile : genFiles ) {
+		for (GenFile genFile : genFiles) {
 			deleteGenFile(genFile);
 		}
 	}
 
 	private void deleteGenFile(GenFile genFile) {
-		//1. genFile의 저장소 경로를 찾고 저장소에서 삭제(유틸 활용)
+		// 1. genFile의 저장소 경로를 찾고 저장소에서 삭제(유틸 활용)
 		String filePath = genFile.getFilePath(genFileDirPath);
 		Util.delteFile(filePath);
 
-		//2. genFile정보를 DB상에서 삭제
+		// 2. genFile정보를 DB상에서 삭제
 		genFileDao.deleteFile(genFile.getId());
 	}
 
@@ -200,5 +200,24 @@ public class GenFileService {
 		return genFileDao.getGenFileById(id);
 	}
 
+	public Map<Integer, Map<String, GenFile>> getFilesMapKeyRelIdAndFileNo(String relTypeCode, List<Integer> relIds,
+			String typeCode, String type2Code) {
+		
+		List<GenFile> genFiles = genFileDao.getGenFilesRelTypeCodeAndRelIdsAndTypeCodeAndType2Code(relTypeCode, relIds,
+				typeCode, type2Code);
+		
+		//Map<String, GenFile> map = new HashMap<>();
+		Map<Integer, Map<String, GenFile>> rs = new LinkedHashMap<>();
+
+		for (GenFile genFile : genFiles) {
+			if (rs.containsKey(genFile.getRelId()) == false) {
+				rs.put(genFile.getRelId(), new LinkedHashMap<>());
+			}
+
+			rs.get(genFile.getRelId()).put(genFile.getFileNo() + "", genFile);
+		}
+
+		return rs;
+	}
 
 }

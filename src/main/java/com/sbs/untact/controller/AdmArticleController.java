@@ -84,7 +84,10 @@ public class AdmArticleController extends BaseController{
 		
 		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page, itemsInAPage);
 		
+		
+		// 21.03.06 게시물 리스트에서 첨부 이미지 가져오는 쿼리를 게시물 마다 1번씩 실행하지 않도록 로직 변경함에 따라 필요 없음
 		/* 각 article에 달려있는 첨부파일 섬네일 가져오기 시작 */
+		/*
 		for ( Article article : articles ) {
 											//String relTypeCode, int relId, String typeCode, String type2Code, int fileNo
 			GenFile genFile = genFileService.getGenFile("article", article.getId(), "common", "attachment", 1);
@@ -94,7 +97,9 @@ public class AdmArticleController extends BaseController{
 				article.setExtra__thumbImg(genFile.getForPrintUrl());
 			}
 		}
+		*/
 		/* 각 article에 달려있는 첨부파일 섬네일 가져오기 끝 */
+		
 		
 		
 		req.setAttribute("articles", articles);

@@ -2,6 +2,7 @@ package com.sbs.untact.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.sbs.untact.dao.ArticleDao;
 import com.sbs.untact.dto.Article;
 import com.sbs.untact.dto.Board;
+import com.sbs.untact.dto.GenFile;
 import com.sbs.untact.dto.ResultData;
 import com.sbs.untact.util.Util;
 
@@ -110,8 +112,24 @@ public class ArticleService {
 	
 			int limitStart = (page - 1) * itemsInAPage;
 			int limitTake = itemsInAPage;
+			
+			/* 게시물 리스트에서 첨부 이미지 가져오는 쿼리를 게시물 마다 1번씩 실행하지 않도록 로직 변경 */
+			//1. article 리스트를 가져온다
+			List<Article> articles = articleDao.getForPrintArticles(boardId, searchKeywordType, searchKeyword, limitStart, limitTake);
+			//2. 가져온 article리스트에서 각 article들의 id만 가져와 Integer 리스트를 만든다
+			List<Integer> articleIds = articles.stream().map(article -> article.getId()).collect(Collectors.toList());
+			//3. Integer 리스트에 들어있는 id에 맞는(관련된) genFile들을 모두 map형태로 가져온다
+			Map<Integer, Map<String, GenFile>> filesMap = genFileService.getFilesMapKeyRelIdAndFileNo("article", articleIds, "common", "attachment");
 
-			return articleDao.getForPrintArticles(boardId, searchKeywordType, searchKeyword, limitStart, limitTake);
+			for (Article article : articles) {
+				Map<String, GenFile> mapByFileNo = filesMap.get(article.getId());
+
+				if (mapByFileNo != null) {
+					article.getExtraNotNull().put("file__common__attachment", mapByFileNo);
+				}
+			}
+
+			return articles;
 	}
 
 	public Board getBoard(int id) {
