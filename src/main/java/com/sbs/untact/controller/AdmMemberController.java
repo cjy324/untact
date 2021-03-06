@@ -22,9 +22,57 @@ public class AdmMemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@RequestMapping("/adm/member/join")
+	public String showJoin() {
+		return "adm/member/join";
+	}
+
+	@RequestMapping("/adm/member/doJoin")
+	@ResponseBody
+	public String doJoin(@RequestParam Map<String, Object> param) {
+		if (param.get("loginId") == null) {
+			return Util.msgAndBack("loginId를 입력해주세요.");
+		}
+
+		Member existingMember = memberService.getMemberByLoginId((String)param.get("loginId"));
+
+		if (existingMember != null) {
+			return Util.msgAndBack("이미 사용중인 로그인아이디 입니다.");
+		}
+
+		if (param.get("loginPw") == null) {
+			return Util.msgAndBack("loginPw를 입력해주세요.");
+		}
+
+		if (param.get("name") == null) {
+			return Util.msgAndBack("name을 입력해주세요.");
+		}
+
+		if (param.get("nickname") == null) {
+			return Util.msgAndBack("nickname을 입력해주세요.");
+		}
+
+		if (param.get("email") == null) {
+			return Util.msgAndBack("email을 입력해주세요.");
+		}
+
+		if (param.get("cellphoneNo") == null) {
+			return Util.msgAndBack("cellphoneNo를 입력해주세요.");
+		}
+
+		memberService.join(param);
+
+		String msg = String.format("%s님 환영합니다.", param.get("nickname"));
+
+		String redirectUrl = Util.ifEmpty((String)param.get("redirectUrl"), "../member/login");
+
+		return Util.msgAndReplace(msg, redirectUrl);
+	}
+	
+	
 	@RequestMapping("/adm/member/login")
 	//@ResponseBody: @ResponseBody를 안하면 /WEB-INF/jsp/adm/member/login.jsp를 찾는다.
-	public String doLogin() {
+	public String showLogin() {
 		return "adm/member/login";
 	}
 	
