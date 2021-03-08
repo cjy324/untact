@@ -28,13 +28,13 @@ public class UsrMemberController {
 		if (param.get("loginId") == null) {
 			return new ResultData("F-1", "loginId를 입력해주세요.");
 		}
-		
+
 		Member existingMember = memberService.getMemberByLoginId((String) param.get("loginId"));
 
 		if (existingMember != null) {
 			return new ResultData("F-2", String.format("%s (은)는 이미 사용중인 로그인아이디 입니다.", param.get("loginId")));
 		}
-		
+
 		if (param.get("loginPw") == null) {
 			return new ResultData("F-1", "loginPw를 입력해주세요.");
 		}
@@ -53,23 +53,22 @@ public class UsrMemberController {
 
 		return memberService.join(param);
 	}
-	
+
 	@RequestMapping("/usr/member/memberByAuthKey")
 	@ResponseBody
 	public ResultData showMemberByAuthKey(String authKey) {
 		if (authKey == null) {
 			return new ResultData("F-1", "authKey를 입력해주세요.");
 		}
-		
+
 		Member existingMember = memberService.getMemberByAuthKey(authKey);
 
-		if(existingMember == null) {
+		if (existingMember == null) {
 			return new ResultData("F-2", "유효하지 않은 authKey입니다.");
 		}
 		return new ResultData("S-1", String.format("유효한 회원입니다."), "member", existingMember);
 	}
 
-	
 	@RequestMapping("/usr/member/authKey")
 	@ResponseBody
 	public ResultData showAuthKey(String loginId, String loginPw) {
@@ -91,16 +90,18 @@ public class UsrMemberController {
 			return new ResultData("F-3", "비밀번호가 일치하지 않습니다.");
 		}
 
-		return new ResultData("S-1", String.format("%s님 환영합니다.", existingMember.getNickname()), "authKey", existingMember.getAuthKey(), "id", existingMember.getId(), "name", existingMember.getName(), "nickname", existingMember.getNickname());
+		return new ResultData("S-1", String.format("%s님 환영합니다.", existingMember.getNickname()), "authKey",
+				existingMember.getAuthKey(), "id", existingMember.getId(), "name", existingMember.getName(), "nickname",
+				existingMember.getNickname());
 	}
-	
+
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
 	public ResultData doLogin(String loginId, String loginPw, HttpSession session) {
-		//HttpSession session
-		//servlet에서와는 달리 스프링에선 session을 바로 요청해서 가져올 수 있다.
+		// HttpSession session
+		// servlet에서와는 달리 스프링에선 session을 바로 요청해서 가져올 수 있다.
 		// ex) servlet에서는 requst를 통해 session을 요청하고 다시 HttpSession로 session 값을 가져왔었다.
-		
+
 		if (loginId == null) {
 			return new ResultData("F-1", "loginId를 입력해주세요.");
 		}
@@ -119,7 +120,7 @@ public class UsrMemberController {
 			return new ResultData("F-3", "비밀번호가 일치하지 않습니다.");
 		}
 
-		//세션에 로그인 회원 id 등록
+		// 세션에 로그인 회원 id 등록
 		session.setAttribute("loginedMemberId", existingMember.getId());
 
 		return new ResultData("S-1", String.format("%s님 환영합니다.", existingMember.getNickname()));
@@ -133,7 +134,7 @@ public class UsrMemberController {
 
 		return new ResultData("S-1", "로그아웃 되었습니다.");
 	}
-	
+
 	@RequestMapping("/usr/member/doModify")
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
@@ -147,5 +148,5 @@ public class UsrMemberController {
 
 		return memberService.modifyMember(param);
 	}
-	
+
 }
