@@ -72,6 +72,16 @@ nickname = "user2",
 cellphoneNo = "01012341234",
 email = "juy32400@gmail.com";
 
+INSERT INTO `member`
+SET regDate = NOW(),
+updateDate = NOW(),
+loginId = "user3",
+loginPw = "user3",
+`name` = "user3",
+nickname = "user3",
+cellphoneNo = "01012341234",
+email = "juy32400@gmail.com";
+
 # 게시판 테이블 추가
 CREATE TABLE board (
   id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,

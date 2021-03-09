@@ -11,9 +11,7 @@ import com.sbs.untact.dto.Member;
 @Mapper
 public interface MemberDao {
 
-	List<Member> getForPrintMembers(@Param("searchKeywordType") String searchKeywordType,
-			@Param("searchKeyword") String searchKeyword, @Param("limitStart") int limitStart,
-			@Param("limitTake") int limitTake);
+	List<Member> getForPrintMembers(Map<String, Object> param);
 
 	void join(Map<String, Object> param);
 

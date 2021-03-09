@@ -2,6 +2,7 @@ package com.sbs.untact.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sbs.untact.service.MemberService;
 
 import lombok.Data;
 
@@ -25,6 +26,9 @@ public class Member {
 	private String email;
 	
 	public String getAuthLevelName() {
-		return "일반회원";
+		return MemberService.getAuthLevelName(this);
+	}
+	public String getAuthLevelNameColor() {
+		return MemberService.getAuthLevelNameColor(this);
 	}
 }
