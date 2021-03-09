@@ -25,6 +25,8 @@ public class Member {
 	private String cellphoneNo;
 	private String email;
 	
+	private String extra__thumbImg;
+	
 	public String getAuthLevelName() {
 		return MemberService.getAuthLevelName(this);
 	}

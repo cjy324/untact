@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sbs.untact.dao.MemberDao;
+import com.sbs.untact.dto.GenFile;
 import com.sbs.untact.dto.Member;
 import com.sbs.untact.dto.ResultData;
 import com.sbs.untact.util.Util;
@@ -88,6 +89,37 @@ public class MemberService {
 
 	public Member getForPrintMember(int id) {
 		return memberDao.getForPrintMember(id);
+	}
+
+
+	public Member getForPrintMemberByAuthKey(String authKey) {
+		Member member = memberDao.getMemberByAuthKey(authKey);
+		//기본 멤버에서 추가정보를 업데이트해서 리턴
+		updateForPrint(member);
+		
+		return member;
+	}
+
+
+	public Member getForPrintMemberByLoginId(String loginId) {
+		Member member = memberDao.getMemberByLoginId(loginId);
+		//기본 멤버에서 추가정보를 업데이트해서 리턴
+		updateForPrint(member);
+		
+		return member;
+	}
+	
+	//기본멤버 정보에 추가 정보를 업데이트해서 리턴
+	private void updateForPrint(Member member) {
+		//멤버의 섬네일 이미지 가져오기
+		GenFile genFile = genFileService.getGenFile("member", member.getId(), "common", "attachment", 1);
+		
+		//만약, 멤버의 섬네일 이미지가 있으면 extra__thumbImg 업데이트
+		if(genFile != null) {
+			String imgUrl = genFile.getForPrintUrl();
+			member.setExtra__thumbImg(imgUrl);
+		}
+		
 	}
 	
 	
