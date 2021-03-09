@@ -11,6 +11,7 @@ import com.sbs.untact.dao.ArticleDao;
 import com.sbs.untact.dto.Article;
 import com.sbs.untact.dto.Board;
 import com.sbs.untact.dto.GenFile;
+import com.sbs.untact.dto.Member;
 import com.sbs.untact.dto.ResultData;
 import com.sbs.untact.util.Util;
 
@@ -87,21 +88,21 @@ public class ArticleService {
 		
 	}
 
-	public ResultData getActorCanModifyRd(Article article, int actorId) {
+	public ResultData getActorCanModifyRd(Article article, Member actor) {
 		//1. 작성인 본인인 경우
-		if (article.getMemberId() == actorId) {
+		if (article.getMemberId() == actor.getId()) {
 			return new ResultData("S-1", "가능합니다.");
 		}
 		//2. 관리자인 경우
-		if (memberService.isAdmin(actorId)) {
+		if (memberService.isAdmin(actor)) {
 			return new ResultData("S-2", "가능합니다.");
 		}
 		//3. 작성인, 관리자 둘다 아닌 경우
 		return new ResultData("F-1", "권한이 없습니다.");
 	}
 
-	public ResultData getActorCanDeleteRd(Article article, int actorId) {
-		return getActorCanModifyRd(article, actorId);
+	public ResultData getActorCanDeleteRd(Article article, Member actor) {
+		return getActorCanModifyRd(article, actor);
 	}
 
 	public Article getForPrintArticle(Integer id) {
