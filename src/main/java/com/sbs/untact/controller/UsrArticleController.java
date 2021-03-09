@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,7 +25,7 @@ public class UsrArticleController {
 	@Autowired
 	private ArticleService articleService;
 
-	@RequestMapping("/usr/article/detail")
+	@GetMapping("/usr/article/detail")
 	@ResponseBody
 	// 스프링부트: 알아서 json형태로 바꿔 출력값을 리턴해준다.
 	public ResultData showDetail(Integer id) {
@@ -42,7 +42,7 @@ public class UsrArticleController {
 		return new ResultData("S-1", "성공", "article", article);
 	}
 
-	@RequestMapping("/usr/article/list")
+	@GetMapping("/usr/article/list")
 	@ResponseBody
 	public ResultData showList(@RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
 		// @RequestParam(defaultValue = "1") int page : page 파라미터의 값이 없으면 디폴트로 1이다.
@@ -81,7 +81,7 @@ public class UsrArticleController {
 		return new ResultData("S-1", "성공", "articles", articles);
 	}
 
-	@RequestMapping("/usr/article/doAdd")
+	@PostMapping("/usr/article/doAdd")
 	@ResponseBody
 	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		//HttpSession session을 HttpServletRequest req로 교체, 인터셉터에서 session 정보를 Request에 담음으로 
@@ -101,7 +101,7 @@ public class UsrArticleController {
 		return articleService.addArticle(param);
 	}
 
-	@RequestMapping("/usr/article/doDelete")
+	@PostMapping("/usr/article/doDelete")
 	@ResponseBody
 	public ResultData doDelete(Integer id, HttpServletRequest req) {
 		// int 기본타입 -> null이 들어갈 수 없음
@@ -128,7 +128,7 @@ public class UsrArticleController {
 		return articleService.deleteArticle(id);
 	}
 
-	@RequestMapping("/usr/article/doModify")
+	@PostMapping("/usr/article/doModify")
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		// int 기본타입 -> null이 들어갈 수 없음
@@ -165,7 +165,7 @@ public class UsrArticleController {
 		return articleService.modifyArticle(param);
 	}
 	
-	@RequestMapping("/usr/article/doAddReply")
+	@PostMapping("/usr/article/doAddReply")
 	@ResponseBody
 	public ResultData doAddReply(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");

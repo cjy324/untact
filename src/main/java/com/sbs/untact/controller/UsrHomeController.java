@@ -16,6 +16,6 @@ public class UsrHomeController {
 	// 만약 "/usr/home/main" 요청이 들어오면 showMain()가 실행되도록 하는 것
 	public String showMain() {
 		System.out.println("hello test");
-		return "Hello!!!!????!!!!!";
+		return "Hello World!!";
 	}
 }
