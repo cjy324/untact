@@ -57,6 +57,10 @@ public class CommonGenFileController extends BaseController {
 			contentType = "application/octet-stream";
 		}
 
-		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(resource);
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + genFile.getOriginFileName() + "\"")
+				.contentType(MediaType.parseMediaType(contentType))
+				.body(resource);
 	}
 }
