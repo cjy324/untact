@@ -80,6 +80,10 @@ public class MemberService {
 			return "";
 		}
 	}
+
+	public Member getForPrintMember(int id) {
+		return memberDao.getForPrintMember(id);
+	}
 	
 	
 }

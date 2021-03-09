@@ -54,6 +54,12 @@
 		WHERE id = #{id}
 	</select>
 	
+	<select id="getForPrintMember" resultType="Member">
+		SELECT *
+		FROM `member`
+		WHERE id = #{id}
+	</select>
+	
 	<!-- public Member getMemberByLoginId(@Param(value = "loginId") String loginId); -->
 	<select id="getMemberByLoginId" resultType="Member">
 		SELECT *
@@ -71,23 +77,26 @@
 	<update id="modifyMember">
 		UPDATE member
 		<set>
-			<if test="loginPw != null || name != null || nickname != null || cellphoneNo != null || email != null">
-				updateDate = NOW(),
+			<if test="loginPw != null || name != null || nickname != null || cellphoneNo != null || email != null || authLevel != null">
+				updateDate = NOW()
 			</if>
 			<if test="loginPw != null">
-				loginPw = #{loginPw},
+				, loginPw = #{loginPw}
 			</if>
 			<if test="name != null">
-				`name` = #{name},
+				, `name` = #{name}
 			</if>
 			<if test="nickname != null">
-				nickname = #{nickname},
+				, nickname = #{nickname}
 			</if>
 			<if test="cellphoneNo != null">
-				cellphoneNo = #{cellphoneNo},
+				, cellphoneNo = #{cellphoneNo}
 			</if>
 			<if test="email != null">
-				email = #{email},
+				, email = #{email}
+			</if>
+			<if test="authLevel != null">
+				, authLevel = #{authLevel}
 			</if>
 		</set>
 		WHERE id = #{id}
