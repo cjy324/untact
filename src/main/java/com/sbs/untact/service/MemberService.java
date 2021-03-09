@@ -16,11 +16,16 @@ public class MemberService {
 	
 	@Autowired
 	MemberDao memberDao;
+	
+	@Autowired
+	GenFileService genFileService;
 
 	public ResultData join(Map<String, Object> param) {
 		memberDao.join(param);
 
 		int id = Util.getAsInt(param.get("id"), 0);
+		
+		genFileService.changeInputFileRelIds(param, id);
 		
 		return new ResultData("S-1", param.get("nickname") + "님, 환영합니다.", "id", id);
 	}
