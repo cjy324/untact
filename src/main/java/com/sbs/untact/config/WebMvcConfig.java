@@ -51,7 +51,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		// 관리자 로그인 필요
 		registry.addInterceptor(needAdminInterceptor).addPathPatterns("/adm/**")
 				.excludePathPatterns("/adm/member/login").excludePathPatterns("/adm/member/doLogin")
-				.excludePathPatterns("/adm/member/join").excludePathPatterns("/adm/member/doJoin");
+				.excludePathPatterns("/adm/member/join").excludePathPatterns("/adm/member/doJoin").excludePathPatterns("/adm/member/getLoginIdDup");
 
 		// 로그인 필요
 		registry.addInterceptor(needLoginInterceptor).addPathPatterns("/**").excludePathPatterns("/")

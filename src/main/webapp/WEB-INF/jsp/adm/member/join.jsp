@@ -4,7 +4,54 @@
 <%@ include file="../part/head.jspf"%>
 
 <script>
+
 	const JoinForm__checkAndSubmitDone = false;
+	
+	let JoinForm__validLoginId = '';
+
+	//ajax로 아이디 중복 체크
+	function JoinForm__checkLoginIdDup(obj){
+		const form = $(obj).closest('form').get(0);
+		const loginId = form.loginId.value;
+
+		form.loginId.value = form.loginId.value.trim();
+		if (form.loginId.value.length == 0) {
+			alert('아이디를 입력해주세요.');
+			form.loginId.focus();
+			return;
+		}
+
+		$.get(
+			'getLoginIdDup',
+			{
+				loginId
+			},
+			function(data){
+				//기본적으로 초록색
+				let colorClass = 'text-green-500';
+
+				//실패했으면 빨간색
+				if(data.fail){
+					colorClass = 'text-red-500';
+				}
+
+				$('.loginIdInputMsg').html("<span class='" + colorClass + "'>" + data.msg + "</span>");
+
+				if ( data.fail ) {
+					form.loginId.focus();
+				}
+				else {
+					JoinForm__validLoginId = data.body.loginId;
+					form.loginPw.focus();
+				}
+
+			},
+			'json'
+
+		);
+
+	};
+
 	
 	function JoinForm__checkAndSubmit(form) {
 		if (JoinForm__checkAndSubmitDone) {
@@ -13,26 +60,32 @@
 		
 		form.loginId.value = form.loginId.value.trim();
 		if (form.loginId.value.length == 0) {
-			alert('로그인아이디를 입력해주세요.');
+			alert('아이디를 입력해주세요.');
 			form.loginId.focus();
+			return;
+		}
+
+		if ( form.loginId.value != JoinForm__validLoginId ) {
+			alert('아이디 중복체크를 해주세요.');
+			$('.btnCheckLoginIdDup').focus();
 			return;
 		}
 		
 		form.loginPw.value = form.loginPw.value.trim();
 		if (form.loginPw.value.length == 0) {
-			alert('로그인비번을 입력해주세요.');
+			alert('비밀번호를 입력해주세요.');
 			form.loginPw.focus();
 			return;
 		}
 		
 		if (form.loginPwConfirm.value.length == 0) {
-			alert('로그인비번 확인을 입력해주세요.');
+			alert('비밀번호를 확인해 주세요.');
 			form.loginPwConfirm.focus();
 			return;
 		}
 		
 		if (form.loginPw.value != form.loginPwConfirm.value ) {
-			alert('로그인비번이 일치하지 않습니다.');
+			alert('비밀번호가 일치하지 않습니다.');
 			form.loginPwConfirm.focus();
 			return;
 		}
@@ -94,6 +147,11 @@
 							class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
 							autofocus="autofocus" type="text" placeholder="아이디를 입력해주세요."
 							name="loginId" maxlength="20" />
+						<div class="loginIdInputMsg"></div>
+						<input
+							onclick="JoinForm__checkLoginIdDup(this);"
+							class="btnCheckLoginIdDup btn-primary mt-2 bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
+							type="button" value="체크" />
 					</div>
 				</div>
 				<div class="flex flex-col mb-4 md:flex-row">

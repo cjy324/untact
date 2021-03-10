@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -273,6 +274,57 @@ public class Util {
 	//만약 String으로 들어오면 int형으로 변환 후 numberFormat으로 리턴
 	public static String numberFormat(String numStr) {
 		return numberFormat(Integer.parseInt(numStr));
+	}
+
+	//숫자로만 구성된 문자열인지 여부 판별
+	public static boolean allNumberString(String str) {
+		if ( str == null ) {
+			return false;
+		}
+
+		if ( str.length() == 0 ) {
+			return true;
+		}
+
+		for ( int i = 0; i < str.length(); i++ ) {
+			if ( Character.isDigit(str.charAt(i)) == false ) {
+				return false;
+			}
+		}
+		
+		//숫자로만 구성되어 있으면 true 리턴
+		return true;
+	}
+
+	//숫자로 시작하는 문자열인지 여부 판별
+	public static boolean startsWithNumberString(String str) {
+		if ( str == null ) {
+			return false;
+		}
+
+		if ( str.length() == 0 ) {
+			return false;
+		}
+		
+		//숫자로 시작하는 문자열이면 true 리턴
+		return Character.isDigit(str.charAt(0));
+	}
+
+	//
+	public static boolean isStandardLoginIdString(String str) {
+		if ( str == null ) {
+			return false;
+		}
+
+		if ( str.length() == 0 ) {
+			return false;
+		}
+
+		// 조건
+		// 5자 이상, 20자 이하로 구성
+		// 숫자로 시작 금지
+		// _, 알파벳, 숫자로만 구성
+		return Pattern.matches("^[a-zA-Z]{1}[a-zA-Z0-9_]{4,19}$", str);
 	}
 
 }
